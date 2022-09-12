@@ -5,11 +5,11 @@ const sucursales= ["Nortcenter","Showcenter","Cinemark"]
 
 // La funcion va a crear un div que contenga un selector de opciones para las peliculas y para las sucursales
 //para necesita el array y el nombre del id para la tag select ya que si les pusiera el mismo me pondria las 2 arrays en 1 solo div
-function agregarSelector(array,idSelector){
+function agregarSelector(array,idSelector,titulo){
 
 //crea el div
     let div = document.createElement("div");
-    div.innerHTML = `<label for="">Selecciona una pelicula:</label>
+    div.innerHTML = `<label for="">Selecciona una ${titulo}:</label>
                     <select id="${idSelector}" name="item">
                         <option value="" selected></option>
                     </select>`;
@@ -46,8 +46,8 @@ function agregarCartelera(array){
 
 }
 
-agregarSelector(peliculas,"peliculas disponibles");
-agregarSelector(sucursales, "sucursales disponibles");
+agregarSelector(peliculas,"peliculas disponibles", "pelicula");
+agregarSelector(sucursales, "sucursales disponibles", "sucursal");
 agregarCartelera(peliculas);
 
 
