@@ -68,25 +68,22 @@ function agregarBuscadorPelicula(){
 //esta funcion agrega los horarios de las arrays doblado y subtitulado
 //array es la array de la que se van a tomar los horarios, array name es el titulo que se le va a poner y appendWhere es para que todo se pueda appendear al div creado con la funcion buscar
 function agregarHorario(array,arrayname,appendWhere){
-    let iterador= 0
-    //el iterador es para el correcto funcionamiento del input de bootstrap (id=customRadio1,2,3,etc)
-    let titulo = document.createElement("div");
-    titulo.innerHTML = `<h4>${arrayname}<h4>`
+
+    let titulo = document.createElement("h4");
+    titulo.innerHTML = `${arrayname}`
+    appendWhere.appendChild(titulo);
 
     //el for each agrega los horarios y los appendea al div que contiene la variable titulo
-    array.forEach((elemento)=>{
-        iterador += 1
+    array.forEach((elemento)=>{     
         let opcion = document.createElement("div");
+        opcion.className= "custom-control custom-radio"
         opcion.innerHTML=`
-                          <div class="custom-control custom-radio">
-                          <input type="radio" id="customRadio${iterador}" name="customRadio" class="custom-control-input">
-                          <label class="custom-control-label" for="customRadio${iterador}">${elemento}</label>
-                          </div>`
-        titulo.appendChild(opcion);
+                        <input type="radio" id="${elemento}" name="customRadio" class="custom-control-input">
+                        <label class="custom-control-label" for="${elemento}">${elemento}</label>`
+        appendWhere.appendChild(opcion);
     })
 
     //el div que contiene titulo se appendea al div creado en la funcion Buscar
-    appendWhere.appendChild(titulo);
 }
 
 function buscar(){
@@ -97,7 +94,7 @@ function buscar(){
     cartelera.innerHTML= "";
 
     let horariosDisponibles= document.createElement("div");
-    horariosDisponibles.innerHTML= `<h4>Por favor elija un horario<h4>` 
+    horariosDisponibles.innerHTML= `<h4>Por favor elija un horario</h4>` 
 
     cartelera.appendChild(horariosDisponibles);
 
