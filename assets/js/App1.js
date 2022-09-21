@@ -1,6 +1,45 @@
-const peliculas= ["Matrix","El Origen","Bastardos sin gloria","Fightclub","Troya"];
+const peliculas= [
+    {
+        id: 1,
+        nombre: "Matrix",
+        imagen: "./img/matrix 1.png",
+    },
+    {
+        id: 2,
+        nombre: "El Origen",
+        imagen: "./img/elOrigen 1.png",
+    },
+    {
+        id: 3,
+        nombre: "Bastardos Sin Gloria",
+        imagen: "./img/bastardos sin gloria 1.png",
+    },
+    {
+        id: 4,
+        nombre: "El Club De La Pelea",
+        imagen: "./img/fightclub 1.png",
+    },
+    {
+        id: 5,
+        nombre: "Troya",
+        imagen: "./img/troya 1.png",
+    },
+]
 
-const sucursales= ["Nortcenter","Showcenter","Cinemark"]
+const sucursales= [
+    {
+        id: 1,
+        nombre: "Nortcenter",
+    },
+    {
+        id: 2,
+        nombre: "Showcenter",
+    },
+    {
+        id: 3,
+        nombre: "Cinemark",
+    }
+]
 
 const doblado= ["20:00 hs", "22:00 hs", "00:00 hs"];//armar funcion para que genere un array que contenga un horario cada 2 horas a partir de las 12 am
 
@@ -26,7 +65,7 @@ function agregarSelector(array,idSelector,titulo){
 //este foreach crea una opcion por cada elemento del array y hace un append con el tag select
     array.forEach((item)=>{
         let opcion = document.createElement("option");
-        opcion.innerHTML = `<option value="${item}" selected>${item}</option>`;
+        opcion.innerHTML = `<option value="${item.nombre}" selected>${item.nombre}</option>`;
         selector.appendChild(opcion);
     });
 
@@ -35,15 +74,15 @@ function agregarSelector(array,idSelector,titulo){
 //la funcion es mpara agregar unas cards que en un furuto contengan la imagen y el nomlbre de cada pelicula
 function agregarCartelera(array){
 
-//al igual que la funcion agregarSelector usa el mismo principio de obtener un div del html y agregarle una card por cada elemento del array
+    //al igual que la funcion agregarSelector usa el mismo principio de obtener un div del html y agregarle una card por cada elemento del array
 
     let container = document.getElementById("cartelera");
 
     array.forEach((pelicula)=>{
         let div = document.createElement("div");
         div.className= "card movies";
-        div.innerHTML= `<img class="card-img-top" src="" alt="Card image cap">
-                    <div class="card-body"> ${pelicula} </div>`;
+        div.innerHTML= `<img class="card-img-top" src="${pelicula.imagen}" alt="Card image cap">
+                    <div class="card-body"> ${pelicula.nombre} </div>`;
         container.appendChild(div);
     })
 
@@ -59,12 +98,61 @@ function agregarBuscadorPelicula(){
     let contenido= document.getElementById("selectores");
     
     //agrega un boton para que con el evento onClick ejecute la funcion Buscar
-    let boton = document.createElement("button");
-    boton.innerHTML= `<button type="button" class="btn btn-primary" onClick="buscar()">Primary</button>`
+    let boton = document.createElement("div");
+    boton.innerHTML= `<button type="button" class="btn btn-primary">Buscar</button>`;
+    boton.addEventListener("click", buscar);
 
     contenido.appendChild(boton);
+
 }
- 
+
+function buscar(){
+
+    //crea un div que va a contener los horarios dependiendo de si son doblados al español o si son subtitulados
+
+    let cartelera = document.getElementById("cartelera");
+    cartelera.innerHTML= "";
+
+    let contenedor = document.createElement("div");
+    contenedor.className = "horariosEntradas";
+
+    let horariosDisponibles= document.createElement("div");
+    horariosDisponibles.innerHTML= `<h4>Por favor elija un horario</h4>` 
+
+    contenedor.appendChild(horariosDisponibles);
+
+    agregarHorario(doblado, "Doblado",contenedor);
+    agregarHorario(subtitulado,"subtitulado",contenedor);
+
+    //crea una lista pra las entradas
+
+    let entradas = document.createElement("div");
+    entradas.innerHTML = `
+                        <label for="">Selecciona la cantidad de entradas:</label>
+                        <select id="cines" name="cine">
+                            <option value="" selected></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>`
+
+    //crea un boton para acceder al formulario
+
+    let boton = document.createElement("div");
+    boton.innerHTML= `<button type="button" class="btn btn-primary">Siguiente</button>`;
+    boton.addEventListener('click', Formulario);
+
+    contenedor.appendChild(entradas);
+    contenedor.appendChild(boton);
+
+    cartelera.appendChild(contenedor);
+}
+
 //esta funcion agrega los horarios de las arrays doblado y subtitulado
 //array es la array de la que se van a tomar los horarios, array name es el titulo que se le va a poner y appendWhere es para que todo se pueda appendear al div creado con la funcion buscar
 function agregarHorario(array,arrayname,appendWhere){
@@ -86,22 +174,65 @@ function agregarHorario(array,arrayname,appendWhere){
     //el div que contiene titulo se appendea al div creado en la funcion Buscar
 }
 
-function buscar(){
+function Formulario(){
 
-    //crea un div que va a contener los horarios dependiendo de si son doblados al español o si son subtitulados
+    //Esta funcion crea un formulario para que el usuario lo llene con sus datos
 
-    let cartelera = document.getElementById("cartelera");//agregar clase para que los horarios no queden centrados
+    let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
 
-    let horariosDisponibles= document.createElement("div");
-    horariosDisponibles.innerHTML= `<h4>Por favor elija un horario</h4>` 
+    let formulario = document.createElement("div");
+    formulario.innerHTML=
+    `
+    <h4>Por favor complete los siguientes datos</h4>
+    <form>
+        <div class="form-group">
+            <label for="formGroupExampleInput">Nombre y Apellido</label>
+            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Nombre y Apellido">
+        </div>
+        <div class="form-group">
+            <label for="formGroupExampleInput2">Mail</label>
+            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="mail">
+        </div>
+        <div class="form-group">
+            <label for="formGroupExampleInput2">Telefono o Celular</label>
+            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Telefono o Celular">
+        </div>
+    </form>
+    `
 
-    cartelera.appendChild(horariosDisponibles);
-
-    agregarHorario(doblado, "Doblado",horariosDisponibles);
-    agregarHorario(subtitulado,"subtitulado",horariosDisponibles);
-
+    let boton = document.createElement("div");
+    boton.innerHTML = `<button type="button" class="btn btn-primary">Siguiente</button>`;
+    boton.addEventListener("click", Resultado);
+    
+    cartelera.appendChild(formulario);
+    cartelera.appendChild(boton);
 }
+
+function Resultado(){
+
+    //Esta funcion es para mostrar todos los datos que fue completando el usuario
+
+    let cartelera = document.getElementById("cartelera");
+    cartelera.innerHTML= "";
+
+    let mostrar = document.createElement("div");
+    mostrar.innerHTML=`<h2>Con esta funcion mi idea es mostrarle al usuario todos los datos que fue completando</h2>`
+
+    let boton = document.createElement("div");
+    boton.innerHTML = `<button type="button" class="btn btn-primary">Volver a incio</button>`;
+    boton.addEventListener("click", volverInicio);
+    
+    cartelera.appendChild(mostrar);
+    cartelera.appendChild(boton);
+}
+
+function volverInicio(){
+    //Esta fucion  vuelve a completar el html con la cartelera del principio
+    let cartelera = document.getElementById("cartelera");
+    cartelera.innerHTML= "";
+    agregarCartelera(peliculas);
+};
 
 agregarBuscadorPelicula();
 agregarCartelera(peliculas);

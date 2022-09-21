@@ -22,8 +22,6 @@ html,body {
 }
 
 .movies{
-    width: 10%;
-    height:40vh;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
