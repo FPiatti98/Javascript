@@ -108,7 +108,17 @@ function agregarBuscadorPelicula(){
 
 function buscar(){
 
-    //crea un div que va a contener los horarios dependiendo de si son doblados al español o si son subtitulados
+    let peliculaElegida = document.getElementById("peliculas disponibles").value;
+    let sucursalElegida = document.getElementById("sucursales disponibles").value;
+
+    const peliculasucursal = {
+        pelicula: peliculaElegida,
+        sucursal: sucursalElegida
+    };
+
+    const peliculasucursalJSON = JSON.stringify(peliculasucursal);
+    localStorage.setItem('input', peliculasucursalJSON);
+
 
     let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
@@ -117,12 +127,13 @@ function buscar(){
     contenedor.className = "horariosEntradas";
 
     let horariosDisponibles= document.createElement("div");
+    horariosDisponibles.className = "horarios custom-control custom-radio"
     horariosDisponibles.innerHTML= `<h4>Por favor elija un horario</h4>` 
 
     contenedor.appendChild(horariosDisponibles);
 
-    agregarHorario(doblado, "Doblado",contenedor);
-    agregarHorario(subtitulado,"subtitulado",contenedor);
+    agregarHorario(doblado, "Doblado",horariosDisponibles);
+    agregarHorario(subtitulado,"subtitulado",horariosDisponibles);
 
     //crea una lista pra las entradas
 
@@ -166,17 +177,43 @@ function agregarHorario(array,arrayname,appendWhere){
         let opcion = document.createElement("div");
         opcion.className= "custom-control custom-radio"
         opcion.innerHTML=`
-                        <input type="radio" id="${elemento}" name="customRadio" class="custom-control-input">
+                        <input type="radio" id="${elemento}" name="customRadio" class="custom-control-input" value="${elemento}">
                         <label class="custom-control-label" for="${elemento}">${elemento}</label>`
         appendWhere.appendChild(opcion);
     })
 
     //el div que contiene titulo se appendea al div creado en la funcion Buscar
-}
+};
 
 function Formulario(){
 
     //Esta funcion crea un formulario para que el usuario lo llene con sus datos
+
+    //buscar el horario elegido
+    let horarios = document.getElementsByName("customRadio");
+    let horarioElegido = ""
+        for (i = 0; i < horarios.length; i++){
+            if (horarios[i].checked){
+               horarioElegido = horarios[i].value
+            };
+        };
+
+    
+    //busca la cantidad de entradas
+
+    let entradas = document.getElementById('cines');
+    let entradaElegida = entradas.options[entradas.selectedIndex].value;
+    
+    //guarda en el locastorage un json de el hoario y las entradas elegidas
+
+    const input = localStorage.getItem('input');
+    const newinput = JSON.parse(input);
+
+    newinput.horario = horarioElegido;
+    newinput.entradas = entradaElegida;
+
+    const newinputJSON = JSON.stringify(newinput);
+    localStorage.setItem ('input', newinputJSON);
 
     let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
@@ -188,15 +225,15 @@ function Formulario(){
     <form>
         <div class="form-group">
             <label for="formGroupExampleInput">Nombre y Apellido</label>
-            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Nombre y Apellido">
+            <input type="text" class="form-control" id="Nombre" placeholder="Nombre y Apellido">
         </div>
         <div class="form-group">
             <label for="formGroupExampleInput2">Mail</label>
-            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="mail">
+            <input type="text" class="form-control" id="Mail" placeholder="mail">
         </div>
         <div class="form-group">
             <label for="formGroupExampleInput2">Telefono o Celular</label>
-            <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Telefono o Celular">
+            <input type="text" class="form-control" id="Celular" placeholder="Telefono o Celular">
         </div>
     </form>
     `
@@ -213,11 +250,28 @@ function Resultado(){
 
     //Esta funcion es para mostrar todos los datos que fue completando el usuario
 
+    //busca los inputs del form
+    let nombre = document.getElementById("Nombre").value
+    let mail = document.getElementById("Mail").value
+    let celular = document.getElementById("Celular").value
+
+    //busca el json, lo convierte en objeto y agrega los inputs del form
+
+    const input = localStorage.getItem('input');
+    const newinput = JSON.parse(input);
+
+    newinput.nombre = nombre;
+    newinput.mail = mail;
+    newinput.celular = celular;
+
     let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
 
+    //muestra los inputs que fue introduciendo el usuario.
+
     let mostrar = document.createElement("div");
-    mostrar.innerHTML=`<h2>Con esta funcion mi idea es mostrarle al usuario todos los datos que fue completando</h2>`
+    mostrar.innerHTML=`<h2>${newinput.nombre}, usted a comprado ${newinput.entradas} entradas para la pelicula ${newinput.pelicula} en la sucursal ${newinput.sucursal} a las ${newinput.horario} </h2>
+    <h4>Se ha enviado un mail con todos los detalles de la compra a la casilla de mail: ${newinput.mail}. Gracias por su compra y que disfrute de la funcion.</h4>`
 
     let boton = document.createElement("div");
     boton.innerHTML = `<button type="button" class="btn btn-primary">Volver a incio</button>`;
