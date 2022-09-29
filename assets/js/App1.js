@@ -269,15 +269,24 @@ function Resultado(){
 
     //muestra los inputs que fue introduciendo el usuario.
 
+    /*
     let mostrar = document.createElement("div");
     mostrar.innerHTML=`<h2>${newinput.nombre}, usted a comprado ${newinput.entradas} entradas para la pelicula ${newinput.pelicula} en la sucursal ${newinput.sucursal} a las ${newinput.horario} </h2>
     <h4>Se ha enviado un mail con todos los detalles de la compra a la casilla de mail: ${newinput.mail}. Gracias por su compra y que disfrute de la funcion.</h4>`
+    */
+
+    Swal.fire(
+        'gracias por su compra',
+        `${newinput.nombre}, usted a comprado ${newinput.entradas} entradas para la pelicula ${newinput.pelicula} en la sucursal ${newinput.sucursal} a las ${newinput.horario}.
+        Se ha enviado un mail con todos los detalles de la compra a la casilla de mail: ${newinput.mail}. Que disfrute de la funcion! `,
+        'success'
+      )
 
     let boton = document.createElement("div");
     boton.innerHTML = `<button type="button" class="btn btn-primary">Volver a incio</button>`;
     boton.addEventListener("click", volverInicio);
     
-    cartelera.appendChild(mostrar);
+    //cartelera.appendChild(mostrar);
     cartelera.appendChild(boton);
 }
 
