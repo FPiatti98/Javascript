@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "nombre": "Matrix",
+        "imagen": "./img/matrix 1.png"
+    },
+    {
+        "id": 2,
+        "nombre": "El Origen",
+        "imagen": "./img/elOrigen 1.png"
+    },
+    {
+        "id": 3,
+        "nombre": "Bastardos Sin Gloria",
+        "imagen": "./img/bastardos sin gloria 1.png"
+    },
+    {
+        "id": 4,
+        "nombre": "El Club De La Pelea",
+        "imagen": "./img/fightclub 1.png"
+    },
+    {
+        "id": 5,
+        "nombre": "Troya",
+        "imagen": "./img/troya 1.png"
+    }
+]
