@@ -1,3 +1,0 @@
-
-
-fetch('data.json');

@@ -1,30 +1,15 @@
-const peliculas= [
-    {
-        id: 1,
-        nombre: "Matrix",
-        imagen: "./img/matrix 1.png",
-    },
-    {
-        id: 2,
-        nombre: "El Origen",
-        imagen: "./img/elOrigen 1.png",
-    },
-    {
-        id: 3,
-        nombre: "Bastardos Sin Gloria",
-        imagen: "./img/bastardos sin gloria 1.png",
-    },
-    {
-        id: 4,
-        nombre: "El Club De La Pelea",
-        imagen: "./img/fightclub 1.png",
-    },
-    {
-        id: 5,
-        nombre: "Troya",
-        imagen: "./img/troya 1.png",
-    },
-]
+async function App() {
+    let peliculas;
+  
+    const res = await fetch('/assets/js/data.json')
+  
+    peliculas = await res.json();
+  
+    subApp(peliculas);
+    
+  }
+
+async function subApp(peliculas){
 
 const sucursales= [
     {
@@ -44,6 +29,22 @@ const sucursales= [
 const doblado= ["20:00 hs", "22:00 hs", "00:00 hs"];//armar funcion para que genere un array que contenga un horario cada 2 horas a partir de las 12 am
 
 const subtitulado = ["14:00 hs", "16:00 hs","18:00 hs"];
+
+/*
+
+async function pedirdatos(){
+
+    let promesa = await fetch("/assets/js/data.json");
+
+    let datos = await promesa.json()
+
+    return datos
+}
+
+const peliculas = pedirdatos();
+
+*/
+
 
 // La funcion va a crear un div que contenga un selector de opciones para las peliculas y para las sucursales
 //para necesita el array y el nombre del id para la tag select ya que si les pusiera el mismo me pondria las 2 arrays en 1 solo div
@@ -72,21 +73,25 @@ function agregarSelector(array,idSelector,titulo){
 }
 
 //la funcion es mpara agregar unas cards que en un furuto contengan la imagen y el nomlbre de cada pelicula
-function agregarCartelera(array){
+function agregarCartelera(){
 
     //al igual que la funcion agregarSelector usa el mismo principio de obtener un div del html y agregarle una card por cada elemento del array
 
-    let container = document.getElementById("cartelera");
+    fetch("/assets/js/data.json")
+    .then((response) => response.json())
+    .then((data) => {
+        let container = document.getElementById("cartelera");
 
-    array.forEach((pelicula)=>{
+    data.forEach((pelicula)=>{
         let div = document.createElement("div");
         div.className= "card movies";
         div.innerHTML= `<img class="card-img-top" src="${pelicula.imagen}" alt="Card image cap">
                     <div class="card-body"> ${pelicula.nombre} </div>`;
         container.appendChild(div);
     })
-
+    })
 }
+
 
 //esta funcion agrega las slectores de pelicula y el boton para buscar los horarios
 function agregarBuscadorPelicula(){
@@ -300,6 +305,6 @@ function volverInicio(){
 agregarBuscadorPelicula();
 agregarCartelera(peliculas);
 
+}
 
-
-
+App();
