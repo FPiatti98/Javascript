@@ -7,7 +7,7 @@ async function App() {
   
     subApp(peliculas);
     
-  }
+};
 
 async function subApp(peliculas){
 
@@ -26,25 +26,9 @@ const sucursales= [
     }
 ]
 
-const doblado= ["20:00 hs", "22:00 hs", "00:00 hs"];//armar funcion para que genere un array que contenga un horario cada 2 horas a partir de las 12 am
+const doblado= ["20:00 hs", "22:00 hs", "00:00 hs"];
 
 const subtitulado = ["14:00 hs", "16:00 hs","18:00 hs"];
-
-/*
-
-async function pedirdatos(){
-
-    let promesa = await fetch("/assets/js/data.json");
-
-    let datos = await promesa.json()
-
-    return datos
-}
-
-const peliculas = pedirdatos();
-
-*/
-
 
 // La funcion va a crear un div que contenga un selector de opciones para las peliculas y para las sucursales
 //para necesita el array y el nombre del id para la tag select ya que si les pusiera el mismo me pondria las 2 arrays en 1 solo div
@@ -73,14 +57,10 @@ function agregarSelector(array,idSelector,titulo){
 }
 
 //la funcion es mpara agregar unas cards que en un furuto contengan la imagen y el nomlbre de cada pelicula
-function agregarCartelera(){
+function agregarCartelera(data){
 
     //al igual que la funcion agregarSelector usa el mismo principio de obtener un div del html y agregarle una card por cada elemento del array
-
-    fetch("/assets/js/data.json")
-    .then((response) => response.json())
-    .then((data) => {
-        let container = document.getElementById("cartelera");
+    let container = document.getElementById("cartelera");
 
     data.forEach((pelicula)=>{
         let div = document.createElement("div");
@@ -89,7 +69,7 @@ function agregarCartelera(){
                     <div class="card-body"> ${pelicula.nombre} </div>`;
         container.appendChild(div);
     })
-    })
+    
 }
 
 
@@ -115,6 +95,18 @@ function buscar(){
 
     let peliculaElegida = document.getElementById("peliculas disponibles").value;
     let sucursalElegida = document.getElementById("sucursales disponibles").value;
+
+    //valida si el ussuario selecciono una pelicula y una sucursal
+
+    if(peliculaElegida == "" || sucursalElegida == ""){
+        Swal.fire({
+            title: 'Por favor seleccione una pelicula y una sucursal',
+            icon: 'info'
+        });
+        return
+    }
+
+    //crea el objeto que se va a usar como JSON
 
     const peliculasucursal = {
         pelicula: peliculaElegida,
@@ -178,6 +170,7 @@ function agregarHorario(array,arrayname,appendWhere){
     appendWhere.appendChild(titulo);
 
     //el for each agrega los horarios y los appendea al div que contiene la variable titulo
+
     array.forEach((elemento)=>{     
         let opcion = document.createElement("div");
         opcion.className= "custom-control custom-radio"
@@ -186,9 +179,22 @@ function agregarHorario(array,arrayname,appendWhere){
                         <label class="custom-control-label" for="${elemento}">${elemento}</label>`
         appendWhere.appendChild(opcion);
     })
-
     //el div que contiene titulo se appendea al div creado en la funcion Buscar
 };
+
+//esta funcion valida si es subtitulada o doblada
+function validarSubDob(data){
+    let subDob =""
+    for (let i = 0; i < 3; i++){
+        if (data == subtitulado[i]){
+            subDob = "Subtitulada"
+            return subDob
+        }else if(data == doblado[i]){
+            subDob = "Doblada"
+            return subDob
+        }
+    }
+}
 
 function Formulario(){
 
@@ -196,18 +202,32 @@ function Formulario(){
 
     //buscar el horario elegido
     let horarios = document.getElementsByName("customRadio");
-    let horarioElegido = ""
+    let horarioElegido = "";
+    let subDobElegido = "";
+
         for (i = 0; i < horarios.length; i++){
+
             if (horarios[i].checked){
                horarioElegido = horarios[i].value
             };
         };
 
+        subDobElegido = validarSubDob(horarioElegido);
     
     //busca la cantidad de entradas
 
     let entradas = document.getElementById('cines');
     let entradaElegida = entradas.options[entradas.selectedIndex].value;
+
+    //valida que el susuario haya elegido un horario y una cantidad de entradas
+
+    if (horarioElegido == "" || entradaElegida == ""){
+        Swal.fire({
+            title: 'Por favor seleccione un horario y una cantidad de entradas',
+            icon: 'info'
+        });
+        return
+    };
     
     //guarda en el locastorage un json de el hoario y las entradas elegidas
 
@@ -216,6 +236,7 @@ function Formulario(){
 
     newinput.horario = horarioElegido;
     newinput.entradas = entradaElegida;
+    newinput.subDob = subDobElegido;
 
     const newinputJSON = JSON.stringify(newinput);
     localStorage.setItem ('input', newinputJSON);
@@ -224,6 +245,7 @@ function Formulario(){
     cartelera.innerHTML= "";
 
     let formulario = document.createElement("div");
+    formulario.className = 'FormularioID'
     formulario.innerHTML=
     `
     <h4>Por favor complete los siguientes datos</h4>
@@ -245,22 +267,52 @@ function Formulario(){
 
     let boton = document.createElement("div");
     boton.innerHTML = `<button type="button" class="btn btn-primary">Siguiente</button>`;
-    boton.addEventListener("click", Resultado);
+    boton.addEventListener("click", validarInputs);
     
     cartelera.appendChild(formulario);
     cartelera.appendChild(boton);
 }
 
-function Resultado(){
+function validarInputs(){
 
-    //Esta funcion es para mostrar todos los datos que fue completando el usuario
-
-    //busca los inputs del form
     let nombre = document.getElementById("Nombre").value
     let mail = document.getElementById("Mail").value
     let celular = document.getElementById("Celular").value
 
-    //busca el json, lo convierte en objeto y agrega los inputs del form
+    //validacion de nombre
+
+    function testnuminstr(str){
+        return /\d/.test(str);
+    };
+
+    //validacion de celular
+
+    let regExp = /[a-zA-Z]/g;
+
+    //validar mail
+
+    function validateEmail(email) {
+        var re = /\S+@\S+\.\S+/;
+        return re.test(email);
+      }
+
+    //validacion
+
+    if (testnuminstr(nombre) == true || regExp.test(celular) == true || validateEmail(mail) == false){
+        Swal.fire({
+            title: 'Por favor ingrese los datos correctamente',
+            icon: 'error'
+        });
+        return
+    } else if(nombre == "" || celular == "" || mail == ""){
+        Swal.fire({
+            title: 'Por favor complete todos los datos',
+            icon: 'error'
+        });
+        return
+    }
+
+    //guardar el json
 
     const input = localStorage.getItem('input');
     const newinput = JSON.parse(input);
@@ -269,20 +321,27 @@ function Resultado(){
     newinput.mail = mail;
     newinput.celular = celular;
 
+    const newinputJSON = JSON.stringify(newinput);
+    localStorage.setItem ('input', newinputJSON);
+
+    Resultado()
+}
+
+function Resultado(){
+
+    //busca el localstorage
+
+    const input = localStorage.getItem('input');
+    const newinput = JSON.parse(input);
+
     let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
 
     //muestra los inputs que fue introduciendo el usuario.
 
-    /*
-    let mostrar = document.createElement("div");
-    mostrar.innerHTML=`<h2>${newinput.nombre}, usted a comprado ${newinput.entradas} entradas para la pelicula ${newinput.pelicula} en la sucursal ${newinput.sucursal} a las ${newinput.horario} </h2>
-    <h4>Se ha enviado un mail con todos los detalles de la compra a la casilla de mail: ${newinput.mail}. Gracias por su compra y que disfrute de la funcion.</h4>`
-    */
-
     Swal.fire(
         'gracias por su compra',
-        `${newinput.nombre}, usted a comprado ${newinput.entradas} entradas para la pelicula ${newinput.pelicula} en la sucursal ${newinput.sucursal} a las ${newinput.horario}.
+        `${newinput.nombre}, usted a comprado ${newinput.entradas} entradas para la pelicula ${newinput.pelicula} ${newinput.subDob} al español, en la sucursal ${newinput.sucursal} a las ${newinput.horario}.
         Se ha enviado un mail con todos los detalles de la compra a la casilla de mail: ${newinput.mail}. Que disfrute de la funcion! `,
         'success'
       )
@@ -291,12 +350,11 @@ function Resultado(){
     boton.innerHTML = `<button type="button" class="btn btn-primary">Volver a incio</button>`;
     boton.addEventListener("click", volverInicio);
     
-    //cartelera.appendChild(mostrar);
     cartelera.appendChild(boton);
 }
 
 function volverInicio(){
-    //Esta fucion  vuelve a completar el html con la cartelera del principio
+    //Esta funcion  vuelve a completar el html con la cartelera del principio
     let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
     agregarCartelera(peliculas);
