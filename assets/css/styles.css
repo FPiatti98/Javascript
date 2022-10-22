@@ -47,3 +47,18 @@ html,body {
     flex-direction: row;
     justify-content: space-around;
 }
+
+.Descripcion{
+    width: 80%;
+    height: 60vh;
+    display:flex;
+    flex-direction: row;
+}
+
+.desc-PG{
+    padding-left: 3%;
+    padding-top: 1%;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}

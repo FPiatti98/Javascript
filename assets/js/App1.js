@@ -188,12 +188,11 @@ function validarSubDob(data){
     for (let i = 0; i < 3; i++){
         if (data == subtitulado[i]){
             subDob = "Subtitulada"
-            return subDob
         }else if(data == doblado[i]){
             subDob = "Doblada"
-            return subDob
         }
     }
+    return subDob
 }
 
 function Formulario(){
@@ -355,14 +354,11 @@ function Resultado(){
 
 function volverInicio(){
     //Esta funcion  vuelve a completar el html con la cartelera del principio
-    let cartelera = document.getElementById("cartelera");
-    cartelera.innerHTML= "";
-    agregarCartelera(peliculas);
+    agregarPeliculas(peliculas);
 };
 
 agregarBuscadorPelicula();
-agregarCartelera(peliculas);
-
+//agregarCartelera(peliculas);
 }
 
 App();
