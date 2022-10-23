@@ -1,6 +1,9 @@
 
 function agregarPeliculas(){
 
+//esta funcion contiene el array de objetos que se va a usar para mostrar la descripcion de la pelicula clickeada
+//en este caso no pude usar el data,json porque para saber que peliucla clickea el usaurio tuevq ue trabajar con un evento y al ser una funcion sincronica no encontre la manera de incorporar el fetch correctamente
+
   let peliculas =[
     {
         "id": 1,
@@ -34,10 +37,12 @@ function agregarPeliculas(){
     }
     ];
 
-        //al igual que la funcion agregarSelector usa el mismo principio de obtener un div del html y agregarle una card por cada elemento del array
+//busca el div con el id "cartelera" y lo vacia
 
 let container = document.getElementById("cartelera");
 container.innerHTML="";
+
+//muestra las peliculas y en el caso de que el usuario clickee en una de ellas usa eventr listener para disopara una funcion que muestre datos de la pelicula elegida
 
 peliculas.forEach((pelicula)=>{
     let div = document.createElement("div");
@@ -65,6 +70,8 @@ peliculas.forEach((pelicula)=>{
                 <p>${peliculas[i].descripcion}</p>
                 </div>
                 `
+                //crea un borton para mostrar las peliculas nuevamente
+
                 let boton = document.createElement("div");
                 boton.innerHTML = `<button type="button" class="btn btn-primary">Atras</button>`;
                 boton.addEventListener("click", agregarPeliculas);
@@ -79,4 +86,3 @@ peliculas.forEach((pelicula)=>{
 };
 
 agregarPeliculas();
-

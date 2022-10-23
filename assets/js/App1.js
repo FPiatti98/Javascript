@@ -1,15 +1,20 @@
+//La funcion principal que realiza el fetch y se lo pasa como parametro a la funcion que contiene todo el codigo
 async function App() {
     let peliculas;
-  
+    
+    //realiza el fetch del array de objetos que contiene las peliculas
+
     const res = await fetch('/assets/js/data.json')
   
     peliculas = await res.json();
-  
+    
     subApp(peliculas);
     
 };
 
 async function subApp(peliculas){
+
+//define los horarios y las sucursales
 
 const sucursales= [
     {
@@ -30,8 +35,8 @@ const doblado= ["20:00 hs", "22:00 hs", "00:00 hs"];
 
 const subtitulado = ["14:00 hs", "16:00 hs","18:00 hs"];
 
-// La funcion va a crear un div que contenga un selector de opciones para las peliculas y para las sucursales
-//para necesita el array y el nombre del id para la tag select ya que si les pusiera el mismo me pondria las 2 arrays en 1 solo div
+// La funcion va a crear un div que contenga un selector de opciones para las peliculas y para las sucursales.
+//para eso necesita el array y el nombre del id para la tag select.
 function agregarSelector(array,idSelector,titulo){
 
 //crea el div
@@ -54,24 +59,7 @@ function agregarSelector(array,idSelector,titulo){
         selector.appendChild(opcion);
     });
 
-}
-
-//la funcion es mpara agregar unas cards que en un furuto contengan la imagen y el nomlbre de cada pelicula
-function agregarCartelera(data){
-
-    //al igual que la funcion agregarSelector usa el mismo principio de obtener un div del html y agregarle una card por cada elemento del array
-    let container = document.getElementById("cartelera");
-
-    data.forEach((pelicula)=>{
-        let div = document.createElement("div");
-        div.className= "card movies";
-        div.innerHTML= `<img class="card-img-top" src="${pelicula.imagen}" alt="Card image cap">
-                    <div class="card-body"> ${pelicula.nombre} </div>`;
-        container.appendChild(div);
-    })
-    
-}
-
+};
 
 //esta funcion agrega las slectores de pelicula y el boton para buscar los horarios
 function agregarBuscadorPelicula(){
@@ -93,6 +81,8 @@ function agregarBuscadorPelicula(){
 
 function buscar(){
 
+//esta funcion le da a elegir al usuario un horario y una cantidad de entradas
+
     let peliculaElegida = document.getElementById("peliculas disponibles").value;
     let sucursalElegida = document.getElementById("sucursales disponibles").value;
 
@@ -106,19 +96,24 @@ function buscar(){
         return
     }
 
-    //crea el objeto que se va a usar como JSON
+    //crea el objeto que se va a usar como JSON.
 
     const peliculasucursal = {
         pelicula: peliculaElegida,
         sucursal: sucursalElegida
     };
 
+    //guarda el JSON en el localstorage.
+
     const peliculasucursalJSON = JSON.stringify(peliculasucursal);
     localStorage.setItem('input', peliculasucursalJSON);
 
+    //vacia el div con el id "cartelera".
 
     let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
+
+    //crea un div donde se va a generar los horarios disponibles
 
     let contenedor = document.createElement("div");
     contenedor.className = "horariosEntradas";
@@ -162,7 +157,7 @@ function buscar(){
 }
 
 //esta funcion agrega los horarios de las arrays doblado y subtitulado
-//array es la array de la que se van a tomar los horarios, array name es el titulo que se le va a poner y appendWhere es para que todo se pueda appendear al div creado con la funcion buscar
+//el parametro array es la array de la que se van a tomar los horarios, array name es el titulo que se le va a poner y appendWhere es para que todo se pueda appendear al div creado con la funcion buscar
 function agregarHorario(array,arrayname,appendWhere){
 
     let titulo = document.createElement("h4");
@@ -185,6 +180,7 @@ function agregarHorario(array,arrayname,appendWhere){
 //esta funcion valida si es subtitulada o doblada
 function validarSubDob(data){
     let subDob =""
+    //usa un for para ver a que array pertenece el hortario elegido
     for (let i = 0; i < 3; i++){
         if (data == subtitulado[i]){
             subDob = "Subtitulada"
@@ -211,6 +207,8 @@ function Formulario(){
             };
         };
 
+        //llama a la funcion par validar si es subtitulada o doblada.
+
         subDobElegido = validarSubDob(horarioElegido);
     
     //busca la cantidad de entradas
@@ -218,7 +216,7 @@ function Formulario(){
     let entradas = document.getElementById('cines');
     let entradaElegida = entradas.options[entradas.selectedIndex].value;
 
-    //valida que el susuario haya elegido un horario y una cantidad de entradas
+    //valida que el usuario haya elegido un horario y una cantidad de entradas
 
     if (horarioElegido == "" || entradaElegida == ""){
         Swal.fire({
@@ -239,6 +237,8 @@ function Formulario(){
 
     const newinputJSON = JSON.stringify(newinput);
     localStorage.setItem ('input', newinputJSON);
+
+    //vacia el div con el id "cartelera" para crear el formulario
 
     let cartelera = document.getElementById("cartelera");
     cartelera.innerHTML= "";
@@ -263,6 +263,8 @@ function Formulario(){
         </div>
     </form>
     `
+
+    //añade un boton para llamar a la funcion que va a validar los datos del formulario
 
     let boton = document.createElement("div");
     boton.innerHTML = `<button type="button" class="btn btn-primary">Siguiente</button>`;
@@ -295,7 +297,7 @@ function validarInputs(){
         return re.test(email);
       }
 
-    //validacion
+    //validacion de datos erroneos o vacios
 
     if (testnuminstr(nombre) == true || regExp.test(celular) == true || validateEmail(mail) == false){
         Swal.fire({
@@ -328,6 +330,8 @@ function validarInputs(){
 
 function Resultado(){
 
+    //esta funcion dispara un sweertalert para informarle al usuario que realizo su compra
+
     //busca el localstorage
 
     const input = localStorage.getItem('input');
@@ -345,6 +349,8 @@ function Resultado(){
         'success'
       )
 
+    //crea un boton para volver al inicio
+
     let boton = document.createElement("div");
     boton.innerHTML = `<button type="button" class="btn btn-primary">Volver a incio</button>`;
     boton.addEventListener("click", volverInicio);
@@ -358,7 +364,6 @@ function volverInicio(){
 };
 
 agregarBuscadorPelicula();
-//agregarCartelera(peliculas);
 }
 
 App();
