@@ -4,7 +4,7 @@ async function App() {
     
     //realiza el fetch del array de objetos que contiene las peliculas
 
-    const res = await fetch('/assets/js/data.json')
+    const res = await fetch('data.json')
   
     peliculas = await res.json();
     
